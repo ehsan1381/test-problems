@@ -1,36 +1,38 @@
-function [ root ] = bisection(func, range, tolerance)
-  Start = range(1);
-  End = range(2);
+function [ root, nIterations] = bisection(func, range, tolerance)
+  START  = range(1);
+  END = range(2);
 
 
   % This MAX_N is computed using the error bound formula for bisection method
-  MAX_N = ceil( ( log( End - Start ) - log( TOL ) ) / log( 2 ) );
+  MAX_N = ceil( ( log( END - START ) - log( tolerance ) ) / log( 2 ) );
 
-  iterations = 1;
+  nIterations = 1;
   root = 0;
-  midpoint = (Start+End)/2;
+  middlePoint = (START+END)/2;
   
-  % in case Start, End or midpoint are good enough
-  if func(Start) < tolerance
-    root = Start;
+  % in case START, END or middlePoint are good enough
+  if abs(func(START)) < tolerance
+    root = START;
     return ;
-  elseif func(End) < tolerance
-    root = End;
+  elseif abs(func(END)) < tolerance
+    root = END;
     return ;
-  
+  elseif abs(func(middlePoint)) < tolerance
+	root = middlePoint;
+	return ;
   else      
-    while iterations <= MAX_N
-      midpoint = (Start+End)/2;
-      fstart = func(Start);
-      fmidpoint = func(midpoint);
+    while nIterations <= MAX_N
+      middlePoint = (START+END)/2;
+      fStart = func(START);
+      fMiddlePoint = func(middlePoint);
 
-      if fstart * fmidpoint < 0
-        End = midpoint;
+      if fStart * fMiddlePoint < 0
+        END = middlePoint;
       else
-        Start = midpoint;
+        START = middlePoint;
       end % if
-      iterations = iterations + 1;
+      nIterations = nIterations + 1;
   end % while
 
-  root = midpoint;
+  root = middlePoint;
 end % function

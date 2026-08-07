@@ -1,10 +1,21 @@
-function [root, iterations] = rootFinding(func, dfunc, range, tolerance, MAX_N)
-    % input and output verification
-
+function [root, nIterations] = rootfinding(func, dfunc, range, tolerance, MAX_N)
+	arguments
+		func function_handle
+ 		dfunc function_handle
+		range (2,1) double
+		tolerance (1, 1) double {mustBeNonzero} = 1e-6
+		MAX_N (1, 1) int32 = 20
+	end % arguments
     % run bisection for a crude approximation
-    [init_root, bisection_iterations] = bisection(func, range, 1e-4);
+    [bisectionApproximation, bisectionNIterations] = bisection(func, range, tolerance * 1e3);
 
-    % run newtonRaphson to obtain accurate solution
-    [root, newton_iterations] = newtonRaphson(func, dfunc, init, tolerance);
-    iterations = newton_iterations + bisection_iterations;   
+	% in case bisectionApproximation is good enough
+	if abs(func(bisectionApproximation)) <= tolerance
+		root = bisectionApproximation;
+		nIterations = bisectionNIterations;
+		return ; 
+    else
+		[root, newtonNIterations] = newtonraphson(func, dfunc, bisectionApproximation, tolerance);
+		nIterations = newtonNIterations + bisectionNIterations;
+	end % if
 end
