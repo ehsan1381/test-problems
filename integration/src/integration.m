@@ -43,7 +43,6 @@ function [partitions, iPartitions] = divide(f, interval, tolerance)
   partitions = zeros([MAX_ITERATIONS, 2]);
   iPartitions = 0;
   % disp("Starting to divide");
-  tic; 
   intervalStart = interval(1);
   intervalEnd = interval(2);
   
@@ -75,5 +74,4 @@ function [partitions, iPartitions] = divide(f, interval, tolerance)
       
   end % while
   % disp("Division over");
-  toc;
 end % function divide
