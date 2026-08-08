@@ -67,9 +67,9 @@ function [partitions, iPartitions] = divide(f, interval, tolerance)
           interval = [intervalEnd, intervalEnd];
 
       else
-          midpoint = (intervalStart + intervalEnd) / 2;
-          interval(1) = midpoint; 
-          intervalEnd = midpoint;
+          changePoint = (2*intervalStart + intervalEnd)/3;
+          interval(1) = changePoint; 
+          intervalEnd = changePoint;
 
       end % if-else
       
