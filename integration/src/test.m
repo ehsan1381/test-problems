@@ -21,7 +21,7 @@ interval = [ -pi/2, pi/2];
 %
 
 f = @(x)(1./(sqrt(1-log(x))));
-interval = [0, e];
+interval = [0, exp(1)];
 [integralApproximation, nPartitions ]  = integration(f, interval, tolerance, nParts)
 
 

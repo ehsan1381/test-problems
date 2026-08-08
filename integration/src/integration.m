@@ -30,7 +30,7 @@ function [integralApproximation] = trapezoid(f, interval, nParts)
     integrationsArr = zeros([nParts - 1, 1]);
     for iPartition = 1:(nParts - 1)
         % integrationsArr(iPartition) = area(yArr(iPartition), yArr(iPartition + 1));
-		integrationsArr(iPartition = 0.5 * width * (yArr(iPartition) + yArr(iPartition + 1)));
+		integrationsArr(iPartition) = 0.5 * width * (yArr(iPartition) + yArr(iPartition + 1));
     end % for
 
     integralApproximation = sum(integrationsArr);
@@ -46,7 +46,6 @@ function [partitions, iPartitions] = divide(f, interval, tolerance)
   tic; 
   intervalStart = interval(1);
   intervalEnd = interval(2);
-  intervalLength = intervalEnd - intervalStart;
   
   while sum(intervalStart ~= intervalEnd) && iPartitions <= MAX_ITERATIONS
       fIntervalStart = f(intervalStart);
@@ -66,7 +65,6 @@ function [partitions, iPartitions] = divide(f, interval, tolerance)
           intervalStart = interval(1);
           intervalEnd = interval(2);
           interval = [intervalEnd, intervalEnd];
-
 
       else
           midpoint = (intervalStart + intervalEnd) / 2;
