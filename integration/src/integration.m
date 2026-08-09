@@ -55,9 +55,9 @@ function [partitions, iPartitions] = divide(f, interval, tolerance)
       fMax = max([fIntervalStart, fIntervalEnd]);
 
       fDifference = @(x)(f(x) - line(x));
-      % difference = abs(trapezoid(fDifference, [intervalStart, intervalEnd], N_PARTITIONS) / fMax);
-      difference = abs(trapezoid(fDifference, [intervalStart, intervalEnd], N_PARTITIONS));
-      if difference <= tolerance * 1e4
+      relDifference = abs(trapezoid(fDifference, [intervalStart, intervalEnd], N_PARTITIONS) / fMax);
+      % difference = abs(trapezoid(fDifference, [intervalStart, intervalEnd], N_PARTITIONS));
+      if relDifference <= tolerance
           iPartitions = iPartitions + 1;
           % disp([intervalStart, intervalEnd]);
           partitions(iPartitions, :) = [intervalStart, intervalEnd];
