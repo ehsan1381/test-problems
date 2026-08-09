@@ -29,5 +29,5 @@ abs(integralApproximation - correctIntegral)
 f = @(x)(1./(sqrt(1-log(x))));
 interval = [0, exp(1)];
 [integralApproximation, nPartitions ]  = integration(f, interval, tolerance, nParts)
-correctIntegral = integral(f, interval(1), interval(2));
+correctIntegral = 4.818029068408066;
 abs(integralApproximation - correctIntegral)
