@@ -4,6 +4,7 @@ module Integration
  , integral
  ) where
 
+import Data.List (foldl')
 
 type Func = Double -> Double
 data Interval = Interval {lo :: Double, hi :: Double}
@@ -20,7 +21,7 @@ line m y0 = (\x -> m*x + y0)
 
 -- norm2
 norm2 :: [Double] -> Double
-norm2 xs = sqrt $ foldl (\acc x -> acc + x*x) 0 xs
+norm2 xs = sqrt $ foldl' (\acc x -> acc + x*x) 0 xs
 
 -- given two points calculate slope
 -- and height, call line function
