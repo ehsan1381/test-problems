@@ -7,7 +7,7 @@ module Integration
 import Data.List (foldl')
 
 type Func = Double -> Double
-data Interval = Interval {lo :: Double, hi :: Double}
+data Interval = Interval {lo :: !Double, hi :: !Double}
 -- data Point = Point {xCoordinate :: Double, yCoordinate :: Double}
 
 -- subtraction for type Func
