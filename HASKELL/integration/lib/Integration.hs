@@ -1,30 +1,33 @@
+{-# LANGUAGE BangPatterns #-}
+{-# OPTIONS_GHC -O2 #-}
+
 module Integration
  ( Func
  , Interval(..)
  , integral
  ) where
 
-import Data.List (foldl')
-
 type Func = Double -> Double
+
+-- Strict fields: both bounds are always needed downstream,
+-- so laziness here only buys thunk buildup across recursive calls.
 data Interval = Interval {lo :: !Double, hi :: !Double}
 -- data Point = Point {xCoordinate :: Double, yCoordinate :: Double}
 
 -- subtraction for type Func
+{-# INLINE subFunc #-}
 subFunc :: Func -> Func -> Func
 subFunc f g = \x -> f x - g x
 
 -- return the line passing through
 -- the points given slope and height
+{-# INLINE line #-}
 line :: Double -> Double -> Func
 line m y0 = (\x -> m*x + y0)
 
--- norm2
-norm2 :: [Double] -> Double
-norm2 xs = sqrt $ foldl' (\acc x -> acc + x*x) 0 xs
-
 -- given two points calculate slope
 -- and height, call line function
+{-# INLINE calcLine #-}
 calcLine :: Func -> Interval -> Func
 calcLine f interval = line m y0
     where
@@ -34,30 +37,31 @@ calcLine f interval = line m y0
         y0 = f x0
         x0 = lo interval
 
--- return a list of equidistant points
--- given an interval, and number of points
-linspace :: Interval -> Double -> [Double]
-linspace interval n = map linFunc [0..(n-1)]
-    where
-        linFunc = line stepsize x0
-        stepsize = (x1 - x0) / (n-1)
-        x0 = lo interval
-        x1 = hi interval
-
--- given a difference function check if the
--- norm2 of a list of function values
--- is less than tolerance
+-- given a difference function, check whether the
+-- norm2 of its values over N equidistant points in the
+-- interval is within tolerance. Implemented as a single
+-- strict tail-recursive loop instead of building two
+-- 100-element lists (linspace, then map f) and folding
+-- them lazily -- same math, zero list allocation.
+{-# INLINE inTolerance #-}
 inTolerance :: Func -> Double -> Interval -> Bool
-inTolerance f tolerance interval
-    | norm2diff <= tolerance = True
-    | otherwise = False
+inTolerance diffFunc tolerance interval = sqrt (go 0 0) <= tolerance
     where
-        norm2diff = norm2 $ map f xvals
--- n parameter of linspace can be varied
--- effects accuracy of the final result and
--- the runtime
-        xvals = linspace interval 100
+        n :: Int
+        n = 100
+-- n parameter can be varied; effects accuracy of the
+-- final result and the runtime
+        x0       = lo interval
+        stepsize = (hi interval - x0) / fromIntegral (n - 1)
 
+        go :: Int -> Double -> Double
+        go !i !acc
+            | i == n    = acc
+            | otherwise = go (i + 1) (acc + d * d)
+            where
+                d = diffFunc (x0 + fromIntegral i * stepsize)
+
+{-# INLINE trapezoid #-}
 trapezoid :: Func -> Interval -> Double
 trapezoid f interval = 0.5 * width * (x0 + x1)
     where
