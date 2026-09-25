@@ -1,7 +1,7 @@
 module Bisection
  ( Interval (..)
  , Func
- , bisect
+ , solve
  ) where
 
 data Interval = Interval {lo :: Double, hi :: Double} deriving (Show)
@@ -41,3 +41,21 @@ bisect iter maxIter f interval tolerance
     a = lo interval
     b = hi interval
 
+newton :: Int -> Int -> Func -> Func -> Double -> Double -> Double
+newton iter maxIter f df rootApprox tolerance
+ | iter >= maxIter = root
+ | rootError <= tolerance = root
+ | otherwise = newton (iter+1) maxIter f df root tolerance
+ where
+    root = rootApprox - fRootApprox / df(rootApprox)
+    fRootApprox = f(rootApprox)
+    rootError = abs ( f rootApprox )
+
+
+solve :: Int -> Int -> Func -> Func -> Interval -> Double -> Double
+solve iter maxIter f df interval tolerance
+ | bisectError < tolerance = bisectApprox
+ | otherwise =  newton 1 maxIter f df bisectApprox tolerance
+ where
+    bisectApprox = bisect iter maxIter f interval tolerance
+    bisectError = abs ( f bisectApprox )
