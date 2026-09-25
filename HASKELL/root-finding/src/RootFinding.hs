@@ -10,9 +10,6 @@ type Func = Double -> Double
 tolerance = 1e-8
 maxIterations = 200
 
-intervalWidth :: Interval -> Double
-intervalWidth interval = abs $ lo interval - hi interval
-
 midpoint :: Interval -> Double
 midpoint interval = (lo interval + hi interval) / 2
 
@@ -36,13 +33,14 @@ bisect :: Int -> Func -> Interval -> Double
 bisect iter f interval
  | iter == maxIterations = midp
  | f midp == 0 = midp
- | intervalWidth interval < tolerance = midp
+ | intervalLength < tolerance = midp
  | signum (f a) == signum (f b) = error "function does not change sign in this interval"
  | otherwise = bisect (iter+1) f (narrow f interval)
  where
     midp = midpoint interval
     a = lo interval
     b = hi interval
+    intervalLength = b - a
 
 newton :: Int -> Func -> Func -> Double -> Double
 newton iter f df rootApprox
@@ -52,7 +50,7 @@ newton iter f df rootApprox
  where
     root = rootApprox - fRootApprox / df(rootApprox)
     fRootApprox = f(rootApprox)
-    rootError = abs ( f rootApprox )
+    rootError = abs ( fRootApprox )
 
 
 solve :: Int -> Func -> Func -> Interval -> Double
