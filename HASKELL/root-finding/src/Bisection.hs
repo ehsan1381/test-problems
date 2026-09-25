@@ -1,4 +1,4 @@
-module Bisection
+module RootFinding
  ( Interval (..)
  , Func
  , solve

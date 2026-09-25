@@ -1,14 +1,14 @@
 module Main (main) where
 
-import qualified Bisection
+import qualified RootFinding 
 
-f :: Bisection.Func
+f :: RootFinding.Func
 f x = x^2 - 2.0
 
-df :: Bisection.Func
+df :: RootFinding.Func
 df x = 2*x
 
 main :: IO ()
 main = do
-    let interval = Bisection.Interval 0 3
-    putStrLn $ show $ Bisection.solve 1 100 f df interval 0.0000001
+    let interval = RootFinding.Interval 0 3
+    putStrLn $ show $ RootFinding.solve 1 100 f df interval 0.0000001
