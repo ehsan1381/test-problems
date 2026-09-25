@@ -7,6 +7,9 @@ module RootFinding
 data Interval = Interval {lo :: Double, hi :: Double} deriving (Show)
 type Func = Double -> Double
 
+tolerance = 1e-8
+maxIterations = 200
+
 intervalWidth :: Interval -> Double
 intervalWidth interval = abs $ lo interval - hi interval
 
@@ -29,33 +32,33 @@ narrow f interval
 -- `bisect` assumes that only one root
 -- exists within the given interval
 -- also that a or b are not roots
-bisect :: Int -> Int -> Func -> Interval -> Double -> Double
-bisect iter maxIter f interval tolerance
- | iter == maxIter = midp
+bisect :: Int -> Func -> Interval -> Double
+bisect iter f interval
+ | iter == maxIterations = midp
  | f midp == 0 = midp
  | intervalWidth interval < tolerance = midp
  | signum (f a) == signum (f b) = error "function does not change sign in this interval"
- | otherwise = bisect (iter+1) maxIter f (narrow f interval) tolerance
+ | otherwise = bisect (iter+1) f (narrow f interval)
  where
     midp = midpoint interval
     a = lo interval
     b = hi interval
 
-newton :: Int -> Int -> Func -> Func -> Double -> Double -> Double
-newton iter maxIter f df rootApprox tolerance
- | iter >= maxIter = root
+newton :: Int -> Func -> Func -> Double -> Double
+newton iter f df rootApprox
+ | iter >= maxIterations = root
  | rootError <= tolerance = root
- | otherwise = newton (iter+1) maxIter f df root tolerance
+ | otherwise = newton (iter+1) f df root
  where
     root = rootApprox - fRootApprox / df(rootApprox)
     fRootApprox = f(rootApprox)
     rootError = abs ( f rootApprox )
 
 
-solve :: Int -> Int -> Func -> Func -> Interval -> Double -> Double
-solve iter maxIter f df interval tolerance
+solve :: Int -> Func -> Func -> Interval -> Double
+solve iter f df interval
  | bisectError < tolerance = bisectApprox
- | otherwise =  newton 1 maxIter f df bisectApprox tolerance
+ | otherwise =  newton 1 f df bisectApprox
  where
-    bisectApprox = bisect iter maxIter f interval tolerance
+    bisectApprox = bisect iter f interval
     bisectError = abs ( f bisectApprox )

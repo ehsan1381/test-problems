@@ -91,15 +91,15 @@
   (major1) == 0 && (major2) <  68 || \
   (major1) == 0 && (major2) == 68 && (minor) <= 10)
 #endif /* MIN_TOOL_VERSION_hsc2hs */
-/* tool pkg-config-3.0.5 */
+/* tool pkg-config-3.0.7 */
 #ifndef TOOL_VERSION_pkg_config
-#define TOOL_VERSION_pkg_config "3.0.5"
+#define TOOL_VERSION_pkg_config "3.0.7"
 #endif /* TOOL_VERSION_pkg_config */
 #ifndef MIN_TOOL_VERSION_pkg_config
 #define MIN_TOOL_VERSION_pkg_config(major1,major2,minor) (\
   (major1) <  3 || \
   (major1) == 3 && (major2) <  0 || \
-  (major1) == 3 && (major2) == 0 && (minor) <= 5)
+  (major1) == 3 && (major2) == 0 && (minor) <= 7)
 #endif /* MIN_TOOL_VERSION_pkg_config */
 /* tool runghc-9.10.3 */
 #ifndef TOOL_VERSION_runghc
