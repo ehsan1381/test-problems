@@ -10,9 +10,6 @@ type Func = Double -> Double
 tolerance = 1e-8
 maxIterations = 200
 
-midpoint :: Interval -> Double
-midpoint interval = (lo interval + hi interval) / 2
-
 -- `narrow` assumes function changes
 -- sign in the given interval
 narrow :: Func -> Interval -> Interval
@@ -24,7 +21,7 @@ narrow f interval
     fmidp = f midp
     a = lo interval
     b = hi interval
-    midp = midpoint interval
+    midp = (lo interval + hi interval) / 2
 
 -- `bisect` assumes that only one root
 -- exists within the given interval
@@ -37,7 +34,7 @@ bisect iter f interval
  | signum (f a) == signum (f b) = error "function does not change sign in this interval"
  | otherwise = bisect (iter+1) f (narrow f interval)
  where
-    midp = midpoint interval
+    midp = (lo interval + hi interval) / 2
     a = lo interval
     b = hi interval
     intervalLength = b - a
